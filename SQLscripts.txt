@@ -1,0 +1,25 @@
+CREATE TABLE City (
+    city_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    city_name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Workshop (
+    workshop_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    workshop_name VARCHAR(255) NOT NULL,
+    city_id INT,
+    FOREIGN KEY (city_id) REFERENCES City(city_id)
+);
+
+CREATE TABLE Team (
+    team_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    team_name VARCHAR(255) NOT NULL,
+    workshop_id INT,
+    FOREIGN KEY (workshop_id) REFERENCES Workshop(workshop_id)
+);
+
+CREATE TABLE Employee (
+    employee_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    employee_name VARCHAR(255) NOT NULL,
+    team_id INT,
+    FOREIGN KEY (team_id) REFERENCES Team(team_id)
+);
