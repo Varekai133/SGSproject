@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	
+	<style>
+        body {
+            margin-left: 2%;
+			margin-top: 1%;
+        }
+    </style>
+	
+    <title>Work Schedule Form</title>
+</head>
+<body>
+    <h1>Выберите сотрудника</h1>
+    <form id="workScheduleForm">
+        <label for="citySelect">Город: </label>
+        <select id="citySelect" name="city"></select><br>
+
+        <label for="workshopSelect">Цех: </label>
+        <select id="workshopSelect" name="workshop"></select><br>
+		
+		<label for="teamSelect">Бригада: </label>
+        <select id="teamSelect" name="team">
+		</select><br>
+
+        <label for="employeeSelect">Сотрудник: </label>
+        <select id="employeeSelect" name="employee"></select><br>
+
+        <button class="btn btn-secondary" type="submit">Do something button</button>
+    </form>
+
+  <script>
+	class Employee {
+	  constructor(name) {
+		this.name = name;
+	  }
+	}
+	
+	class Team {
+	  constructor(name, employees = []) {
+		this.name = name;
+		this.employees = employees;
+	  }
+	}
+
+	class Workshop {
+	  constructor(name, team = []) {
+		this.name = name;
+		this.teams = team;
+	  }
+	}
+
+	class City {
+	  constructor(name, workshops = []) {
+		this.name = name;
+		this.workshops = workshops;
+	  }
+	}
+	
+	const employee1 = new Employee("Иванов Иван");
+	const employee2 = new Employee("Петров Петр");
+	const employee3 = new Employee("Сидоров Андрей");
+	const employee4 = new Employee("Холобаев Виктор");
+	const employee5 = new Employee("Нечаев Артем");
+	const employee6 = new Employee("Новиков Илья");
+	const employee7 = new Employee("Донских Павел");
+	const employee8 = new Employee("Горных Денис");
+	const employees = [employee1, employee2, employee3, employee4, employee5, employee6, employee7, employee8];
+	
+	const team1 = new Team("Бригада 1", [employee1]);
+	const team2 = new Team("Бригада 2", [employee2, employee3]);
+	const team3 = new Team("Бригада 1", [employee4, employee5]);
+	const team4 = new Team("Бригада 2", [employee6]);
+	const team5 = new Team("Бригада 1", [employee7]);
+	const team6 = new Team("Бригада 2", [employee8]);
+	
+	const workshop1 = new Workshop("Цех 1", [team1, team2]);
+	const workshop2 = new Workshop("Цех 2", [team3, team4]);
+	const workshop3 = new Workshop("Цех 3", [team5, team6]);
+	const workshops = [workshop1, workshop2, workshop3];
+	
+	const city1 = new City("Тула", [workshop1, workshop2]);
+	const city2 = new City("Кострома", [workshop3]);
+	const cities = [city1, city2];
+	
+	const citySelect = document.getElementById("citySelect");
+    const workshopSelect = document.getElementById("workshopSelect");
+	const teamSelect = document.getElementById("teamSelect");
+    const employeeSelect = document.getElementById("employeeSelect");
+		
+	function addOptions(selectElement, options) {
+		selectElement.innerHTML = "";
+		options.forEach(option => {
+			const optionElement = document.createElement("option");
+			optionElement.value = option.name;
+			optionElement.textContent = option.name;
+			selectElement.appendChild(optionElement);
+		});
+	}
+
+	citySelect.addEventListener("change", () => {
+		const selectedCity = cities.find(city => city.name === citySelect.value);
+		if (selectedCity) {
+			addOptions(workshopSelect, selectedCity.workshops);
+			workshopSelect.dispatchEvent(new Event("change"));
+		}
+	});
+
+	workshopSelect.addEventListener("change", () => {
+		const selectedCity = cities.find(city => city.name === citySelect.value);
+		const selectedWorkshop = selectedCity.workshops.find(workshop => workshop.name === workshopSelect.value);
+		if (selectedWorkshop) {
+			addOptions(teamSelect, selectedWorkshop.teams);
+			teamSelect.dispatchEvent(new Event("change"));
+		}
+	});
+
+	teamSelect.addEventListener("change", () => {
+		const selectedCity = cities.find(city => city.name === citySelect.value);
+		const selectedWorkshop = selectedCity.workshops.find(workshop => workshop.name === workshopSelect.value);
+		const selectedTeam = selectedWorkshop.teams.find(team => team.name === teamSelect.value);
+		if (selectedTeam) {
+		  addOptions(employeeSelect, selectedTeam.employees);
+		}
+	});
+
+  // Initial update when the page loads
+	addOptions(citySelect, cities);
+	addOptions(workshopSelect, cities[0].workshops);
+	addOptions(teamSelect, cities[0].workshops[0].teams);
+	addOptions(employeeSelect, cities[0].workshops[0].teams[0].employees);
+  </script>
+</body>
+</html>
